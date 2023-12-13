@@ -128,7 +128,7 @@ public class BoardDAO {
 		ResultSet rs = null;
 		List<BoardVO> articleList = null;
 		String sql = "select * from ("
-				+ "select rownum rnum, num, writer, email, subject, pass, regdate, readcount, ref, step, depth, content, ip "
+				+ "select * "
 				+ "from ("
 						+ "select * "
 						+ "from board order by ref desc, step asc)) "

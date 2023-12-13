@@ -21,7 +21,7 @@
 			<b>글목록(전체글:${count}) </b>
 		</div>
 		<table align="right">
-			<td><a href="/jsptest/board/writeForm.do"
+			<td ><a href="/jsptest/board/writeForm.do"
 				class="btn btn-primary">글쓰기</a></td>
 		</table>
 		<c:if test="${count==0 }">
@@ -33,7 +33,8 @@
 		</c:if>
 		<c:if test="${count>0 }">
 			<!-- <table width="700" border="1" cellpadding="0" cellspacing="0"> -->
-			<table align='center' border='1' class="table table-striped">
+			<table align='center' border='1'
+				class="table table-striped">
 				<tr heigth="30" bgcolor="${value_c }">
 					<td align="center" width="50">번 호</td>
 					<td align="center" width="250">제 목</td>
@@ -67,12 +68,6 @@
 				</c:forEach>
 			</table>
 		</c:if>
-		<div align="center">
-			<form method="get">
-				<input type="text" name="searchInput"> 
-				<input type="submit" value="검색.미완">
-			</form>
-		</div>
 		<c:if test="${count >0 }">
 			<div align="center">
 				<ul class="pagination justify-content-center">

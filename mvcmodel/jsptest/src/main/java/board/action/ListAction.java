@@ -16,6 +16,7 @@ public class ListAction implements CommandAction {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		// <수정2>
 		String pageNum = request.getParameter("pageNum");
+		String searchInput = request.getParameter("searchInput");
 		if (pageNum == null) {
 			pageNum = "1";
 		}

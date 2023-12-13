@@ -13,6 +13,7 @@
     <a href="/jsptest/mvc/login.di">/jsptest/mvc/login.di</a><br>
     <a href="/jsptest/mvc/login.di">/jsptest/mvc/login.di</a><br>
     <a href="/jsptest/board/list.do">/jsptest/board/list.do</a><br>
+    <a href="/board/list.do">/board/list.do</a><br>
     <a href="/jsptest/board/writeForm.do">/jsptest/board/writeForm.do</a><br>
 </body>
 </html>
