@@ -30,11 +30,18 @@ public class ListAction implements CommandAction {
 		int number = 0;
 
 		List<BoardVO> articleList = null;
+		
 		BoardDAO dbPro = BoardDAO.getInstance();
-		count = dbPro.getArticleCount();// 전체글 수
-		if (count > 0) {
-			articleList = dbPro.getArticles(startRow, endRow);// 수정<3>
-		}
+//		count = dbPro.getArticleCount();// 전체글 수
+//		if (count > 0) {
+//			articleList = dbPro.getArticles(startRow, endRow);// 수정<3>
+//		}
+		List<Object> list = dbPro.getArticles2(startRow, endRow,searchInput);
+		count = (int) list.get(0);
+		articleList = (List<BoardVO>) list.get(1);
+		
+		
+		
 		number = count - (currentPage - 1) * pageSize;// 수정<4>
 		// 해당 뷰에서 사용할 속성 new Integer(currentpage) deprecated
 		// new Integer(currentPage)=>currentPage 적어도 된다.

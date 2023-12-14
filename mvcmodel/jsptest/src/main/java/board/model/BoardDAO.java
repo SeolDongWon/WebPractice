@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoardDAO {
+	private static final String Object = null;
 	private static BoardDAO instance = null;
 
 	private BoardDAO() {
@@ -127,12 +128,8 @@ public class BoardDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		List<BoardVO> articleList = null;
-		String sql = "select * from ("
-				+ "select * "
-				+ "from ("
-						+ "select * "
-						+ "from board order by ref desc, step asc)) "
-						+ "where rnum>=? and rnum<=?";
+		String sql = "select * from (" + "select rownum rnum, sq.* from ("
+				+ "select * from board order by ref desc, step asc)sq) " + "where ?<= rnum and rnum<=?";
 		/* <수정2> */
 
 		try {
@@ -142,7 +139,7 @@ public class BoardDAO {
 			pstmt.setInt(2, end);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				articleList = new ArrayList<BoardVO>(end-start+1);// 수정<4>
+				articleList = new ArrayList<BoardVO>(end - start + 1);// 수정<4>
 				do {
 					BoardVO article = new BoardVO();
 					article.setNum(rs.getInt("num"));
@@ -177,8 +174,85 @@ public class BoardDAO {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(articleList.size());
 		return articleList;
 	}
+
+	public List<Object> getArticles2(int start, int end, String searchInput) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<BoardVO> articleList = null;
+		List<Object> list = new ArrayList<Object>();
+		System.out.println("searchInput : " + searchInput);
+
+		String sql = " from board";
+
+		try {
+			conn = ConnUtil.getConnection();
+			if (searchInput != null) {
+				sql = sql + " where subject like ? ";
+			}
+			sql = sql + " order by ref desc, step asc";
+
+			pstmt = conn.prepareStatement("select count(*)"+sql);
+			pstmt.setString(1, "%" + searchInput + "%");
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				System.out.println(rs.getInt(1));
+				list.add(rs.getInt(1));
+			}
+			
+			sql = "select * from (" + "select rownum rnum, sq.* from ("
+					+ "select * from board order by ref desc, step asc)sq) " + "where ?<= rnum and rnum<=?";
+			/* <수정2> */
+
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
+
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				articleList = new ArrayList<BoardVO>(end - start + 1);// 수정<4>
+				do {
+					BoardVO article = new BoardVO();
+					article.setNum(rs.getInt("num"));
+					article.setWriter(rs.getString("writer"));
+					article.setEmail(rs.getString("email"));
+					article.setSubject(rs.getString("subject"));
+					article.setPass(rs.getString("pass"));
+					article.setRegdate(rs.getTimestamp("regdate"));
+					article.setReadcount(rs.getInt("readcount"));
+					article.setRef(rs.getInt("ref"));
+					article.setStep(rs.getInt("step"));
+					article.setDepth(rs.getInt("depth"));
+					article.setContent(rs.getString("content"));
+					article.setIp(rs.getString("ip"));
+					articleList.add(article);
+				} while (rs.next());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		list.add(articleList);
+		return list;
+	}
+
 	public BoardVO getArticle(int num) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -369,5 +443,4 @@ public class BoardDAO {
 		return result;
 	}
 
-	
 }
